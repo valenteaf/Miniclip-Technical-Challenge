@@ -103,6 +103,35 @@ def print_missing_keys(missing_keys: list[str]):
 def print_versions(older_name: str, older_version: str, newer_name: str, newer_version: str):
     print(f"> OLDER FILE: {older_name} ({older_version});\n> NEWER FILE: {newer_name} ({newer_version});\n")
 
+def print_internal_missing_placeholders(older: dict, newer: dict, older_name: str, newer_name: str, missing_placeholders: list[str] = [f"%@", f"%u"]):
+    """ Print the missing placeholders of each localisation file. """
+
+    print(f"3) MISSING PLACEHOLDERS for EACH FILE:")
+    print(f"   Possible missing placeholders: {missing_placeholders}\n")
+
+    print(f"   3.1) FILE '{older_name}':")
+    print_missing_placeholders_for_each_file(older, missing_placeholders)
+
+    print(f"\n   3.2) FILE '{newer_name}':")
+    print_missing_placeholders_for_each_file(newer, missing_placeholders)
+
+    print("")
+
+def print_missing_placeholders_for_each_file(file: dict, missing_placeholders: list[str]):
+    for key in file.keys():
+        for placeholder in missing_placeholders:
+            missing = get_keys_w_missing_placeholder(file[key], placeholder)
+            if missing:
+                print(f"       - {key}: {missing} (missing '{placeholder}');")
+
+def get_keys_w_missing_placeholder(strings: dict, placeholder: str) -> list[str]:
+    """ Returns the strings with the missing placeholders, if any string includes said placeholder. """
+
+    strings_use_placeholder = any(placeholder in value for value in strings.values())
+
+    if strings_use_placeholder:
+        return [key for key, value in strings.items() if placeholder not in value]
+
 def main(argv: list[str] | None = None) -> dict[str, dict]:
     args = parse_args(argv)
 
@@ -123,6 +152,8 @@ def main(argv: list[str] | None = None) -> dict[str, dict]:
 
     print_new_keys(new_keys)
     print_missing_keys(missing_keys)
+
+    print_internal_missing_placeholders(older, newer, older_name, newer_name)
 
 
 if __name__ == "__main__":
