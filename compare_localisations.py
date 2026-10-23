@@ -99,16 +99,16 @@ def print_missing_keys(missing_keys: list[str]):
 def print_versions(older_name: str, older_version: str, newer_name: str, newer_version: str):
     print(f"> OLDER FILE: {older_name} ({older_version});\n> NEWER FILE: {newer_name} ({newer_version});\n")
 
-def print_internal_missing_placeholders(older: dict, newer: dict, older_name: str, newer_name: str, missing_placeholders: list[str] = [f"%@", f"%u"]):
+def print_internal_missing_placeholders(older: dict, newer: dict, missing_placeholders: list[str] = [f"%@", f"%u"]):
     """ Print the missing placeholders of each localisation file. """
 
     print(f"3) MISSING PLACEHOLDERS for EACH FILE:")
     print(f"   Possible missing placeholders: {missing_placeholders}\n")
 
-    print(f"   3.1) FILE '{older_name}':")
+    print(f"   3.1) OLDER FILE:")
     print_missing_placeholders_for_each_file(older, missing_placeholders)
 
-    print(f"\n   3.2) FILE '{newer_name}':")
+    print(f"\n   3.2) NEWER FILE:")
     print_missing_placeholders_for_each_file(newer, missing_placeholders)
 
     print("")
@@ -181,6 +181,40 @@ def print_languages(older: dict, newer: dict):
         print("   None.")
     print("")
 
+def print_missing_options(older: dict, newer: dict):
+    print("5) MISSING OPTIONS:")
+    print(f"   5.1) OLDER FILE:")
+    #print_missing_options_for_each_file(older, missing_options)
+    print(f"\n   5.2) NEWER FILE:")
+    #print_missing_options_for_each_file(newer, missing_options)
+    print("")
+
+def print_size_changes(older: dict, newer: dict):
+    print("6) SIZE CHANGES: (for existing keys)")
+    print(f"   6.1) OLDER FILE:")
+    #print_size_changes_for_each_file(older)
+    print(f"\n   6.2) NEWER FILE:")
+    #print_size_changes_for_each_file(newer)
+    print("")
+
+def print_text_changes(older: dict, newer: dict):
+    print("7) ALL TEXT CHANGES: (for existing keys and languages)")
+    print("  (- key: language - old text -> new text)\n")
+
+    any_found = False
+    
+    for key, values in older.items():
+        if key in newer:
+            for lang, value in values.items():
+                if lang in newer[key] and value != newer[key][lang]:
+                    print(f"   - {key}: {lang} - {value} -> {newer[key][lang]}")
+                    any_found = True
+    
+    if not any_found:
+        print("   None.")
+
+    print("")
+
 def main(argv: list[str] | None = None) -> dict[str, dict]:
     args = parse_args(argv)
 
@@ -202,9 +236,17 @@ def main(argv: list[str] | None = None) -> dict[str, dict]:
     print_new_keys(new_keys)
     print_missing_keys(missing_keys)
 
-    print_internal_missing_placeholders(older, newer, older_name, newer_name)
+    print_internal_missing_placeholders(older, newer)
     
     print_languages(older, newer)
+
+    print_missing_options(older, newer)
+
+    print_size_changes(older, newer)
+
+    print_text_changes(older, newer)
+
+    #print
 
 
 if __name__ == "__main__":
