@@ -1,10 +1,10 @@
 # Introduction
 
-The purpose of this exercise and repo is to compare two localisation '.plist' files with one another and identify bugs in either file.
+The purpose of this exercise and repo is to compare two localisation `.plist` files with one another and identify bugs in either file.
 
 This would greatly facilitate the update process for a localisation file for a new release, as problems would be easily identified and a new file could be validated quickly against its older version.
 
-This repo includes a simple Python script, 'compare_localisations.py', that compares two localisation .plist files with one another and attempts to identify possible bugs in either file.
+This repo includes a simple Python script, `compare_localisations.py`, that compares two localisation .plist files with one another and attempts to identify possible bugs in either file.
 
 # How to use
 
@@ -20,7 +20,9 @@ A number of potential issues is flagged by the script.
 
 When the script is ran, a short report is printed on the command line with the number of each kind of potential bug.
 
-A longer, more verbose report, specifying each potential bug, is produced and written in a .txt file called 'comparison_report.md'.
+A longer, more verbose report, specifying each potential bug, is produced and written in a .txt file called `comparison_report.txt`.
+
+If you wish to print this report on the command line, please run the `compare_localisations.py` script with the `--console` option.
 
 # Potential issues
 
@@ -46,9 +48,9 @@ This has the potential to be a bug.
     For the same file and same key, all languages should be present.
     If one is missing, it is very likely a bug.
 
-    c. Missing "options" (that is, 'A:[.../.../...]', 'B:[...]', etc):
-    For the same key, it is important to check if all languages include the 'A:[', 'B:[' and ']' characters (that is, the options start and end characters), if they are supposed to.
-    Then, it is important to check if the number of options (that is, the number of '/' characters in between '[]') is the same for the same key across languages.
+    c. Missing "options" (that is, `A:[.../.../...]`, `B:[...]`, etc):
+    For the same key, it is important to check if all languages include the `A:[`, `B:[` and `]` characters (that is, the options start and end characters), if they are supposed to.
+    Then, it is important to check if the number of options (that is, the number of `/` characters in between `[]`) is the same for the same key across languages.
     These are both very likely bugs.
 
 4. Identify new or missing languages between files:
@@ -70,7 +72,8 @@ They will include previously caught bugs, like missing placeholder characters.
 - Currently not checking for several placeholders in a string; if there should be more than one placeholder in a string but there is only one, the script will not accuse it of being wrong;
 - Create possible spelling/punctuation checker (like the typo in vídeo -> video);
 - Compare line sizes for each file, if a standard maximum line size or number of lines for each key is given;
-- Extend the search for the 'options' starter characters ('A:[', 'B:[') for all possible letters, possibly with regex;
+- Extend the search for the 'options' starter characters (`A:[`, `B:[`) for all possible letters, possibly with regex;
+- Check for 'options' that went missing between the older and newer file;
 
 # Risk analysis
 
