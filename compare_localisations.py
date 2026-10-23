@@ -4,12 +4,15 @@ Compares localisation dictionaries from an older and a newer plist file.
     Usage:
         python compare_localisations.py path/to/older/file.plist path/to/newer/file.plist
 """
-
 from __future__ import annotations
 
 import argparse
 import plistlib
 from pathlib import Path
+
+# VARIABLES
+MAX_LINE_SIZE_THRESHOLD = 0
+PLACEHOLDERS_TO_CHECK = [f"%@", f"%u", f"A:[", f"B:[", "]"] # includes options starter and ender
 
 def load_plist(path: str | Path) -> dict:
     """ Return the root dictionary from a localisation plist file. """
@@ -189,13 +192,39 @@ def print_missing_options(older: dict, newer: dict):
     #print_missing_options_for_each_file(newer, missing_options)
     print("")
 
-def print_size_changes(older: dict, newer: dict):
+def print_size_changes(older: dict, newer: dict, line_size_threshold: int = 0):
     print("6) SIZE CHANGES: (for existing keys)")
-    print(f"   6.1) OLDER FILE:")
-    #print_size_changes_for_each_file(older)
-    print(f"\n   6.2) NEWER FILE:")
-    #print_size_changes_for_each_file(newer)
+
+    # Compare sizes between lines for the same file, if a standard max line size or line nb. for each key is given
+    
+    # Compare old sizings with new sizings for existing keys
+    print_size_changes_between_files(older, newer, line_size_threshold)
+
     print("")
+
+def print_size_changes_between_files(older: dict, newer: dict, line_size_threshold: int):
+    ''' Compares sizes of string between files for the same key and language '''
+    any_found = False
+    for key, values in older.items():
+        if key in newer:
+            for lang, old_value in values.items():
+                if lang in newer[key] and old_value != newer[key][lang]:
+                    old_value_lines = old_value.splitlines()
+                    new_value_lines = newer[key][lang].splitlines()
+                   
+                   # Check if nb. of lines is the same
+                    if len(old_value_lines) != len(new_value_lines):
+                        print(f"   - {key}: {lang} - Old nb. lines: {len(old_value_lines)} -> New nb. lines: {len(new_value_lines)}")
+                        any_found = True
+                    
+                    # Check if size of lines is the same within a certain threshold
+                    for i in range(len(old_value_lines)):
+                        if i < len(new_value_lines) and abs(len(old_value_lines[i]) - len(new_value_lines[i])) > line_size_threshold:
+                            print(f"   - {key}: {lang} (line {i}) - Old size: {len(old_value_lines[i])} -> New size: {len(new_value_lines[i])}")
+                            any_found = True
+
+    if not any_found:
+        print("   None.")
 
 def print_text_changes(older: dict, newer: dict):
     print("7) ALL TEXT CHANGES: (for existing keys and languages)")
@@ -236,13 +265,13 @@ def main(argv: list[str] | None = None) -> dict[str, dict]:
     print_new_keys(new_keys)
     print_missing_keys(missing_keys)
 
-    print_internal_missing_placeholders(older, newer)
+    print_internal_missing_placeholders(older, newer, PLACEHOLDERS_TO_CHECK)
     
     print_languages(older, newer)
 
     print_missing_options(older, newer)
 
-    print_size_changes(older, newer)
+    print_size_changes(older, newer, MAX_LINE_SIZE_THRESHOLD)
 
     print_text_changes(older, newer)
 

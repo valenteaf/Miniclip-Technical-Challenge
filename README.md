@@ -16,3 +16,6 @@
 - Create separate file verbose report;
 - Create short warnings report;
 - Currently not checking for several placeholders in a string; if there should be more than one placeholder in a string but there is only one, the script will not accuse it of being wrong;
+- Create possible spelling/punctuation checker (like the typo in vídeo -> video);
+- Compare sizes between lines for the same file, if a standard maximum line size or number of lines for each key is given;
+- Extend the search for the 'options' starter characters ("A:[", "B:[") for all possible letters, possibly with regex;
