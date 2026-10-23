@@ -5,5 +5,8 @@
 3. Identify bugs in either file:
     a. Missing `%@`, `%u` placeholders;
     b. Missing language;
-4. New size of text differs much from the previous size;
+    c. Missing option in [];
+4. New size of text differs much from the previous size:
+    a. Check nb. of newlines;
+    b. Check size of each line;
 5. Text changes for each key;
