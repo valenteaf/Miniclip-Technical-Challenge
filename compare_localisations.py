@@ -9,6 +9,8 @@ from __future__ import annotations
 import argparse
 import plistlib
 from pathlib import Path
+import re
+from collections import Counter
 
 # VARIABLES
 MAX_LINE_SIZE_THRESHOLD = 0
@@ -186,11 +188,57 @@ def print_languages(older: dict, newer: dict):
 
 def print_missing_options(older: dict, newer: dict):
     print("5) MISSING OPTIONS:")
-    print(f"   5.1) OLDER FILE:")
-    #print_missing_options_for_each_file(older, missing_options)
-    print(f"\n   5.2) NEWER FILE:")
-    #print_missing_options_for_each_file(newer, missing_options)
+    print(f"   5.1) Between files:")
+    #print_different_options(older, newer)
+    print(f"\n   5.2) In each file:")
+    print(f"\n      5.2.1) IN OLDER FILE:")
+    print_missing_options_for_each_file(older)
+    print(f"\n      5.2.2) IN NEWER FILE:")
+    print_missing_options_for_each_file(newer)
     print("")
+
+def print_different_options(older: dict, newer: dict):
+    ''' Between the older and newer files, print the different option types (A, B, ...) and the number of options for each type, if it is different. '''
+
+def print_missing_options_for_each_file(file: dict):
+    ''' Print the missing 'options' (A and B) for each file. '''
+    ''' For each key and language, find how many A or B options (how many '/' are in each option), and compare them to the most common number of options, for each type of option. '''
+    any_found = False
+    for key, values in file.items():
+        nb_options_A = []
+        nb_options_B = []
+        for lang, string in values.items():
+            # For each language, find how many A or B options (how many / are in each option)
+            if ":[" in string:
+                options_A = re.findall(r"A:\[([^\]]*)\]", string)
+                options_B = re.findall(r"B:\[([^\]]*)\]", string)
+                if options_A:
+                    if len(options_A) == 1:
+                        nb_options_A.append((lang, len(options_A[0].split("/"))))
+                    else:
+                        print(f"      - {key}: {lang} - Too many A options found: {len(options_A)};")
+                if options_B:
+                    if len(options_B) == 1: 
+                            nb_options_B.append((lang, len(options_B[0].split("/"))))
+                    else:
+                        print(f"      - {key}: {lang} - Too many B options found: {len(options_B)};")
+
+        # Compare to most common number of /
+        if nb_options_A and len({n for _, n in nb_options_A}) != 1:
+            most_common_value, how_often = Counter([n for _, n in nb_options_A]).most_common(1)[0]
+            for lang, nb_options in nb_options_A:
+                if nb_options != most_common_value:
+                    print(f"      - {key}: {lang} - {nb_options} A options -> should be {most_common_value} A options;")
+                    any_found = True
+        if nb_options_B and len({n for _, n in nb_options_B}) != 1:
+            most_common_value, how_often = Counter([n for _, n in nb_options_B]).most_common(1)[0]
+            for lang, nb_options in nb_options_B:
+                if nb_options != most_common_value:
+                    print(f"      - {key}: {lang} - {nb_options} B options -> should be {most_common_value} B options;")
+                    any_found = True
+
+    if not any_found:
+        print("      None.")
 
 def print_size_changes(older: dict, newer: dict, line_size_threshold: int = 0):
     print("6) SIZE CHANGES: (for existing keys)")
