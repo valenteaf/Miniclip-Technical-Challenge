@@ -11,7 +11,6 @@ import argparse
 import plistlib
 from pathlib import Path
 
-
 def load_plist(path: str | Path) -> dict:
     """ Return the root dictionary from a localisation plist file. """
     plist_path = Path(path)
@@ -25,7 +24,6 @@ def load_plist(path: str | Path) -> dict:
         raise TypeError(f"Root of {plist_path} is not a dictionary")
 
     return data
-
 
 def load_localisations(path: str | Path) -> dict:
     """ Return the `localisations` dictionary from a plist file. """
@@ -41,7 +39,6 @@ def load_localisations(path: str | Path) -> dict:
 
     return localisations
 
-
 def load_version(path: str | Path) -> str:
     """ Return the `version` string from a localisation plist file. """
     plist_path = Path(path)
@@ -55,7 +52,6 @@ def load_version(path: str | Path) -> str:
         raise TypeError(f"'version' in {plist_path} is not a string")
 
     return version
-
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """ Parses the command line arguments. Should be 2 arguments: the path to the older and the newer localisation plist files. """
@@ -132,6 +128,59 @@ def get_keys_w_missing_placeholder(strings: dict, placeholder: str) -> list[str]
     if strings_use_placeholder:
         return [key for key, value in strings.items() if placeholder not in value]
 
+def get_missing_languages(file: dict, all_languages: list[str]) -> list[str]:
+    return [(key, [lang for lang in all_languages if lang not in value]) 
+        for key, value in file.items()
+        if any(lang not in value for lang in all_languages)]
+
+def get_language_list(file: dict) -> list[str]:
+    """ Returns the list of languages present in the localisation files. """
+    return list({lang for translations in file.values() for lang in translations})
+
+def get_new_languages(older: dict, newer: dict) -> list[str]:
+    return [lang for lang in get_language_list(newer) if lang not in get_language_list(older)]
+
+def get_removed_languages(older: dict, newer: dict) -> list[str]:
+    return [lang for lang in get_language_list(older) if lang not in get_language_list(newer)]
+
+def print_languages(older: dict, newer: dict):
+    print("4) LANGUAGES:")
+    print(f"   All languages present: {set(get_language_list(older) + get_language_list(newer))}\n")
+
+    print(f"   4.1) NEW LANGUAGES: (only present in newer file)")
+    new_languages = get_new_languages(older, newer)
+    if new_languages:
+        print(f"   {new_languages}")
+    else:
+        print("   None.")
+    print("")
+
+    print(f"   4.2) REMOVED LANGUAGES: (only present in older file)")
+    removed_languages = get_removed_languages(older, newer)
+    if removed_languages:
+        print(f"   {removed_languages}")
+    else:
+        print("   None.")
+    print("")
+
+    print(f"   4.3) MISSING LANGUAGES for OLDER FILE per KEY: ")
+    missing_languages_old = get_missing_languages(older, get_language_list(older))
+    if missing_languages_old:
+        for key, langs in missing_languages_old:
+            print(f"   - {key}: {langs}")
+    else:
+        print("   None.")
+    print("")
+
+    print(f"   4.3) MISSING LANGUAGES for NEWER FILE per KEY: ")
+    missing_languages_new = get_missing_languages(newer, get_language_list(newer))
+    if missing_languages_new:
+        for key, langs in missing_languages_new:
+            print(f"   - {key}: {langs}")
+    else:
+        print("   None.")
+    print("")
+
 def main(argv: list[str] | None = None) -> dict[str, dict]:
     args = parse_args(argv)
 
@@ -154,6 +203,8 @@ def main(argv: list[str] | None = None) -> dict[str, dict]:
     print_missing_keys(missing_keys)
 
     print_internal_missing_placeholders(older, newer, older_name, newer_name)
+    
+    print_languages(older, newer)
 
 
 if __name__ == "__main__":
