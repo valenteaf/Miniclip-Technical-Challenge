@@ -1,6 +1,7 @@
 # Potential issues
 
-1. Missing `%@` placeholder;
-2. New size of text differs much from the previous size;
-3. Identify new keys;
-4. Identify missing keys;
+1. Identify new keys;
+2. Identify missing keys;
+3. Identify bugs in either file:
+    a. Missing `%@` placeholder;
+4. New size of text differs much from the previous size;
