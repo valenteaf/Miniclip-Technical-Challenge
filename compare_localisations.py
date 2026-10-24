@@ -104,51 +104,55 @@ def get_new_keys(older: dict, newer: dict) -> list[str]:
     return [key for key in newer if key not in older]
 
 def print_new_keys(new_keys: list[str]):
-    report_print("1) NEW KEYS: (only present in newer file)")
+    report_print("1) NEW KEYS: (only present in newer file)", to_console=True)
     if new_keys:
+        print(f"{len(new_keys)} found.")
         for key in new_keys:
             report_print(f"- {key};")
     else:
-        report_print("   None.")
-    report_print("")
+        report_print("   None.", to_console=True)
+    report_print("",to_console=True)
 
 def get_missing_keys(older: dict, newer: dict) -> list[str]:
     """ Returns any keys not present in the newer localisation dictionary """ 
     return [key for key in older if key not in newer]
 
 def print_missing_keys(missing_keys: list[str]):
-    report_print("2) MISSING KEYS: (only present in older file)")
+    report_print("2) MISSING KEYS: (only present in older file)", to_console=True)
     if missing_keys:
+        print(f"{len(missing_keys)} found.")
         for key in missing_keys:
             report_print(f"- {key};")
     else:
-        report_print("   None.")
-    report_print("")
+        report_print("   None.", to_console=True)
+    report_print("", to_console=True)
 
 def print_versions(older_name: str, older_version: str, newer_name: str, newer_version: str):
-    report_print(f"> OLDER FILE: {older_name} ({older_version});\n> NEWER FILE: {newer_name} ({newer_version});\n")
+    report_print(f"> OLDER FILE: {older_name} ({older_version});\n> NEWER FILE: {newer_name} ({newer_version});\n", to_console=True)
 
 def print_internal_missing_placeholders(older: dict, newer: dict, missing_placeholders: list[str] = [f"%@", f"%u"]):
     """ Print the missing placeholders of each localisation file. """
 
-    report_print(f"3) MISSING PLACEHOLDERS for EACH FILE:")
+    report_print(f"3) MISSING PLACEHOLDERS for EACH FILE:", to_console=True)
     report_print(f"   Possible missing placeholders: {missing_placeholders}\n")
 
-    report_print(f"   3.1) OLDER FILE:")
+    report_print(f"   3.1) OLDER FILE:", to_console=True)
     print_missing_placeholders_for_each_file(older, missing_placeholders)
 
-    report_print(f"\n   3.2) NEWER FILE:")
+    report_print(f"\n   3.2) NEWER FILE:", to_console=True)
     print_missing_placeholders_for_each_file(newer, missing_placeholders)
 
-    report_print("")
+    report_print("", to_console=True)
 
 def print_missing_placeholders_for_each_file(file: dict, missing_placeholders: list[str]):
+    nb_missing = 0
     for key in file.keys():
         for placeholder in missing_placeholders:
             missing = get_keys_w_missing_placeholder(file[key], placeholder)
             if missing:
                 report_print(f"       - {key}: {missing} (missing '{placeholder}');")
-
+                nb_missing += 1
+    print(f"   {nb_missing} found.")
 def get_keys_w_missing_placeholder(strings: dict, placeholder: str) -> list[str]:
     """ Returns the strings with the missing placeholders, if any string includes said placeholder. """
 
@@ -173,53 +177,57 @@ def get_removed_languages(older: dict, newer: dict) -> list[str]:
     return [lang for lang in get_language_list(older) if lang not in get_language_list(newer)]
 
 def print_languages(older: dict, newer: dict):
-    report_print("4) LANGUAGES:")
+    report_print("4) LANGUAGES:", to_console=True)
     report_print(f"   All languages present: {set(get_language_list(older) + get_language_list(newer))}\n")
 
-    report_print(f"   4.1) NEW LANGUAGES: (only present in newer file)")
+    report_print(f"   4.1) NEW LANGUAGES: (only present in newer file)", to_console=True)
     new_languages = get_new_languages(older, newer)
     if new_languages:
         report_print(f"   {new_languages}")
+        print(f"   {len(new_languages)} found.")
     else:
-        report_print("   None.")
+        report_print("   None.", to_console=True)
     report_print("")
 
-    report_print(f"   4.2) REMOVED LANGUAGES: (only present in older file)")
+    report_print(f"   4.2) REMOVED LANGUAGES: (only present in older file)", to_console=True)
     removed_languages = get_removed_languages(older, newer)
     if removed_languages:
         report_print(f"   {removed_languages}")
+        print(f"   {len(new_languages)} found.")
     else:
-        report_print("   None.")
+        report_print("   None.", to_console=True)
     report_print("")
 
-    report_print(f"   4.3) MISSING LANGUAGES for OLDER FILE per KEY: ")
+    report_print(f"   4.3) MISSING LANGUAGES for OLDER FILE per KEY: ", to_console=True)
     missing_languages_old = get_missing_languages(older, get_language_list(older))
     if missing_languages_old:
         for key, langs in missing_languages_old:
             report_print(f"   - {key}: {langs}")
+        print(f"   {len(missing_languages_old)} found.")
     else:
-        report_print("   None.")
+        report_print("   None.", to_console=True)
     report_print("")
 
-    report_print(f"   4.3) MISSING LANGUAGES for NEWER FILE per KEY: ")
+    report_print(f"   4.4) MISSING LANGUAGES for NEWER FILE per KEY: ", to_console=True)
     missing_languages_new = get_missing_languages(newer, get_language_list(newer))
     if missing_languages_new:
         for key, langs in missing_languages_new:
             report_print(f"   - {key}: {langs}")
+        print(f"   {len(missing_languages_new)} found.")
     else:
-        report_print("   None.")
-    report_print("")
+        report_print("   None.", to_console=True)
+    report_print("", to_console=True)
 
 def print_missing_options(older: dict, newer: dict):
-    report_print("5) MISSING OPTIONS:")
+    report_print("5) MISSING OPTIONS:", to_console=True)
     #report_print(f"   5.1) Between files:")
     #print_different_options(older, newer)
-    report_print(f"\n   5.1) In each file:")
-    report_print(f"\n      5.1.1) IN OLDER FILE:")
+    report_print(f"\n   5.1) In each file:", to_console=True)
+    report_print(f"\n      5.1.1) IN OLDER FILE:", to_console=True)
     print_missing_options_for_each_file(older)
-    report_print(f"\n      5.1.2) IN NEWER FILE:")
+    report_print(f"\n      5.1.2) IN NEWER FILE:", to_console=True)
     print_missing_options_for_each_file(newer)
-    report_print("")
+    report_print("", to_console=True)
 
 #def print_different_options(older: dict, newer: dict):
 #    ''' Between the older and newer files, print the different option types (A, B, ...) and the number of options for each type, if it is different. '''
@@ -228,6 +236,7 @@ def print_missing_options_for_each_file(file: dict):
     ''' Print the missing 'options' (A and B) for each file. '''
     ''' For each key and language, find how many A or B options (how many '/' are in each option), and compare them to the most common number of options, for each type of option. '''
     any_found = False
+    nb_issues = 0
     for key, values in file.items():
         nb_options_A = []
         nb_options_B = []
@@ -241,11 +250,15 @@ def print_missing_options_for_each_file(file: dict):
                         nb_options_A.append((lang, len(options_A[0].split("/"))))
                     else:
                         report_print(f"      - {key}: {lang} - Too many A options found: {len(options_A)};")
+                        nb_issues += 1
+                        any_found = True
                 if options_B:
                     if len(options_B) == 1: 
                             nb_options_B.append((lang, len(options_B[0].split("/"))))
                     else:
                         report_print(f"      - {key}: {lang} - Too many B options found: {len(options_B)};")
+                        nb_issues += 1
+                        any_found = True
 
         # Compare to most common number of /
         if nb_options_A and len({n for _, n in nb_options_A}) != 1:
@@ -253,30 +266,35 @@ def print_missing_options_for_each_file(file: dict):
             for lang, nb_options in nb_options_A:
                 if nb_options != most_common_value:
                     report_print(f"      - {key}: {lang} - {nb_options} A options -> should be {most_common_value} A options;")
+                    nb_issues += 1
                     any_found = True
         if nb_options_B and len({n for _, n in nb_options_B}) != 1:
             most_common_value, how_often = Counter([n for _, n in nb_options_B]).most_common(1)[0]
             for lang, nb_options in nb_options_B:
                 if nb_options != most_common_value:
                     report_print(f"      - {key}: {lang} - {nb_options} B options -> should be {most_common_value} B options;")
+                    nb_issues += 1
                     any_found = True
 
     if not any_found:
-        report_print("      None.")
+        report_print("      None.", to_console=True)
+    else:
+        print(f"      {nb_issues} issues found.")
 
 def print_size_changes(older: dict, newer: dict, line_size_threshold: int = 0):
-    report_print("6) SIZE CHANGES: (for existing keys)")
+    report_print("6) SIZE CHANGES: (for existing keys)", to_console=True)
 
     # Compare sizes between lines for the same file, if a standard max line size or line nb. for each key is given
     
     # Compare old sizings with new sizings for existing keys
     print_size_changes_between_files(older, newer, line_size_threshold)
 
-    report_print("")
+    report_print("", to_console=True)
 
 def print_size_changes_between_files(older: dict, newer: dict, line_size_threshold: int):
     ''' Compares sizes of string between files for the same key and language '''
     any_found = False
+    nb_issues = 0
     for key, values in older.items():
         if key in newer:
             for lang, old_value in values.items():
@@ -288,33 +306,40 @@ def print_size_changes_between_files(older: dict, newer: dict, line_size_thresho
                     if len(old_value_lines) != len(new_value_lines):
                         report_print(f"   - {key}: {lang} - Old nb. lines: {len(old_value_lines)} -> New nb. lines: {len(new_value_lines)}")
                         any_found = True
+                        nb_issues += 1
                     
                     # Check if size of lines is the same within a certain threshold
                     for i in range(len(old_value_lines)):
                         if i < len(new_value_lines) and abs(len(old_value_lines[i]) - len(new_value_lines[i])) > line_size_threshold:
                             report_print(f"   - {key}: {lang} (line {i}) - Old size: {len(old_value_lines[i])} -> New size: {len(new_value_lines[i])}")
                             any_found = True
+                            nb_issues += 1
 
     if not any_found:
         report_print("   None.")
+    else:
+        print(f"   {nb_issues} issues found.")
 
 def print_text_changes(older: dict, newer: dict):
-    report_print("7) ALL TEXT CHANGES: (for existing keys and languages)")
+    report_print("7) ALL TEXT CHANGES: (for existing keys and languages)", to_console=True)
     report_print("  (- key: language - old text -> new text)\n")
 
     any_found = False
-    
+    nb_issues = 0
     for key, values in older.items():
         if key in newer:
             for lang, value in values.items():
                 if lang in newer[key] and value != newer[key][lang]:
                     report_print(f"   - {key}: {lang} - {value} -> {newer[key][lang]}")
                     any_found = True
+                    nb_issues += 1
     
     if not any_found:
-        report_print("   None.")
+        report_print("   None.", to_console=True)
+    else:
+        print(f"   {nb_issues} issues found.")
 
-    report_print("")
+    report_print("", to_console=True)
 
 def main(argv: list[str] | None = None) -> dict[str, dict]:
     global _report_file, _print_to_console
@@ -324,7 +349,8 @@ def main(argv: list[str] | None = None) -> dict[str, dict]:
     with REPORT_PATH.open("w", encoding="utf-8") as report_file:
         _report_file = report_file
 
-        report_print("\n------------------- LOCALISATION FILE COMPARER TOOL ------------------- \n")
+        report_print("\n------------------- LOCALISATION FILE COMPARER TOOL ------------------- \n", to_console=True)
+        print("SECTIONS W/ POSSIBLE CODE-BREAKING BUGS:\n3.2), 4.2), 4.4), 5.1.2)\n")
 
         older_name = args.older.name
         older_version = load_version(args.older)
@@ -353,6 +379,8 @@ def main(argv: list[str] | None = None) -> dict[str, dict]:
         print_text_changes(older, newer)
 
     _report_file = None
+
+    print(f"Full report saved to '{REPORT_PATH}'.")
 
 
 if __name__ == "__main__":

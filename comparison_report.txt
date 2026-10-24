@@ -1,0 +1,64 @@
+
+------------------- LOCALISATION FILE COMPARER TOOL ------------------- 
+
+> OLDER FILE: localisations_1_2_0_removed_lang_updated_size.plist (1.2.0);
+> NEWER FILE: localisations_1_2_1.plist (1.2.0);
+
+1) NEW KEYS: (only present in newer file)
+- 9bb069bc-a70c-45ce-875b-225f8ccef615;
+- 1981dc5a-a6b8-4fd3-be04-052522e08c86;
+
+2) MISSING KEYS: (only present in older file)
+- 7a794655-44e9-49d6-99c6-df936bec3fcc;
+
+3) MISSING PLACEHOLDERS for EACH FILE:
+   Possible missing placeholders: ['%@', '%u', 'A:[', 'B:[', ']']
+
+   3.1) OLDER FILE:
+       - 2b827952-8d1a-4c31-9283-8753d1fc51be: ['fr'] (missing '%u');
+
+   3.2) NEWER FILE:
+       - 2b827952-8d1a-4c31-9283-8753d1fc51be: ['it', 'ru'] (missing '%u');
+       - 1981dc5a-a6b8-4fd3-be04-052522e08c86: ['it'] (missing 'A:[');
+       - 1981dc5a-a6b8-4fd3-be04-052522e08c86: ['it'] (missing ']');
+
+4) LANGUAGES:
+   All languages present: {'tk', 'it', 'fr', 'de', 'jp', 'en-US', 'es', 'ru', 'pt-BR'}
+
+   4.1) NEW LANGUAGES: (only present in newer file)
+   ['jp']
+
+   4.2) REMOVED LANGUAGES: (only present in older file)
+   ['es']
+
+   4.3) MISSING LANGUAGES for OLDER FILE per KEY: 
+   - 7a794655-44e9-49d6-99c6-df936bec3fcc: ['tk']
+   - 2b827952-8d1a-4c31-9283-8753d1fc51be: ['pt-BR']
+
+   4.4) MISSING LANGUAGES for NEWER FILE per KEY: 
+   None.
+
+5) MISSING OPTIONS:
+
+   5.1) In each file:
+
+      5.1.1) IN OLDER FILE:
+      None.
+
+      5.1.2) IN NEWER FILE:
+      - 1981dc5a-a6b8-4fd3-be04-052522e08c86: tk - 2 B options -> should be 3 B options;
+
+6) SIZE CHANGES: (for existing keys)
+   - 2b827952-8d1a-4c31-9283-8753d1fc51be: it - Old nb. lines: 1 -> New nb. lines: 0
+   - 2b827952-8d1a-4c31-9283-8753d1fc51be: ru (line 0) - Old size: 15 -> New size: 14
+   - d8225439-0a23-404c-857d-8cd37032a606: en-US (line 0) - Old size: 103 -> New size: 109
+
+7) ALL TEXT CHANGES: (for existing keys and languages)
+  (- key: language - old text -> new text)
+
+   - 2b827952-8d1a-4c31-9283-8753d1fc51be: fr - Commence dans % ... -> Commence dans %u...
+   - 2b827952-8d1a-4c31-9283-8753d1fc51be: it - Inizio tra %u... -> 
+   - 2b827952-8d1a-4c31-9283-8753d1fc51be: ru - До начала %u... -> До начала %...
+   - d8225439-0a23-404c-857d-8cd37032a606: en-US - Watch a short\nand earn 15 coins.\nYou can watch as many videos\n as are available\nto earn more coins. -> Watch a short video\nand earn 15 coins.\nYou can watch as many videos\n as are available\nto earn more coins.
+   - d8225439-0a23-404c-857d-8cd37032a606: pt-BR - Assista a um vídeo curto\ne ganhe 15 moedas.\nVocê pode assistir a quantos videos\n disponíveis quiser\npara ganhar mais moedas. -> Assista a um vídeo curto\ne ganhe 15 moedas.\nVocê pode assistir a quantos vídeos\n disponíveis quiser\npara ganhar mais moedas.
+

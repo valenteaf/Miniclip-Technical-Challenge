@@ -19,6 +19,7 @@ python compare_localisations.py path/to/older/file.plist path/to/newer/file.plis
 A number of potential issues is flagged by the script.
 
 When the script is ran, a short report is printed on the command line with the number of each kind of potential bug.
+The probable code-breaking bug sections are identified at the top of the report.
 
 A longer, more verbose report, specifying each potential bug, is produced and written in a .txt file called `comparison_report.txt`.
 
@@ -67,12 +68,16 @@ They will include previously caught bugs, like missing placeholder characters.
 
 # To-do: Future work and improvements
 
-- Create separate file verbose report;
-- Create short warnings report;
+- Improve short warnings report with more obvious differentiation between levels of bugs (code-breaking, content, possible, etc);
+
 - Currently not checking for several placeholders in a string; if there should be more than one placeholder in a string but there is only one, the script will not accuse it of being wrong;
+
 - Create possible spelling/punctuation checker (like the typo in vídeo -> video);
+
 - Compare line sizes for each file, if a standard maximum line size or number of lines for each key is given;
+
 - Extend the search for the 'options' starter characters (`A:[`, `B:[`) for all possible letters, possibly with regex;
+
 - Check for 'options' that went missing between the older and newer file;
 
 # Risk analysis
@@ -80,4 +85,23 @@ They will include previously caught bugs, like missing placeholder characters.
 In my opinion, the biggest risk with running this script to analyze a new localisation file is the script missing a number of bugs that may exist in the localisation file, namely:
 
 - Spelling/punctuaction errors on new keys and languages;
+
 - A string for a new key being too large (too many line breaks/too lengthy lines), as no maximum size per key is provided;
+
+- More option types than `A` and `B` existing;
+
+- More than 1 replacement character per line.
+
+# How the issues were found
+
+I began by looking into each `.plist` file to discover how it was organized, to try to find any 'weird' characters or structures (like `%u` or `A:[.../...]`) that would require special handling or any bugs and typos that jumped off at me.
+
+I thought of most of the code structure first (what I would be looking for) and, as I developed it, new ideas of new possible bugs popped into my head (like if any languages could be missing), and I tried to take those into account as well.
+
+I also thought the size of the text could be too big for its designated location on a window, and wanted to find a way to take that into account as well.
+
+Something that was quite important to me was to produce an easy-to-read and easy-to-understand report that made bug-fixing quick (by telling you exactly where to look, for example).
+
+I wish I had a bit more time to create a short risk report with all code-breaking bugs highlighted.
+
+This took around 5-6 (non-consecutive) hours to build.
